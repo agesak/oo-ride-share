@@ -78,5 +78,10 @@ describe "Passenger class" do
       passenger_54 = RideShare::Passenger.new(id: 54, name: "Fifty-Four", phone_number: "123456789", trips: @pass_trips)
       expect(passenger_54.net_expenditures).must_equal 40
     end
+
+    it "returns nil for no trips" do
+      passenger_empty = RideShare::Passenger.new(id: 54, name: "Fifty-Four", phone_number: "123456789", trips: [])
+      expect(passenger_empty.net_expenditures).must_equal 0
+    end
   end
 end

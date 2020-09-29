@@ -17,7 +17,11 @@ module RideShare
     end
 
     def net_expenditures
-      return @trips.map{|trip| trip.cost}.sum
+      total = @trips.map{|trip| trip.cost}
+      unless total.empty?
+        return total.sum
+      end
+      return 0
     end
 
     private
