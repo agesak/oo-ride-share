@@ -1,2 +1,5 @@
 /coverage/
 .DS_Store
+.floo
+.flooignore
+driver.rb
