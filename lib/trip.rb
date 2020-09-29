@@ -14,7 +14,9 @@ module RideShare
           start_time:,
           end_time:,
           cost: nil,
-          rating:
+          rating:,
+          driver: nil,
+          driver_id: nil
         )
       super(id)
 
@@ -38,6 +40,17 @@ module RideShare
 
       if @rating > 5 || @rating < 1
         raise ArgumentError.new("Invalid rating #{@rating}")
+      end
+
+      if driver
+        @driver = driver
+        @driver_id = driver.id
+
+      elsif driver_id
+        @driver_id = driver_id
+
+      else
+        raise ArgumentError, 'Driver or driver id is required'
       end
     end
 
@@ -71,7 +84,8 @@ module RideShare
                start_time: Time.parse(record[:start_time]),
                end_time: Time.parse(record[:end_time]),
                cost: record[:cost],
-               rating: record[:rating]
+               rating: record[:rating],
+               driver_id: record[:driver_id]
              )
     end
   end
