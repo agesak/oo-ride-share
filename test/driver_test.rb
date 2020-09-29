@@ -1,6 +1,6 @@
 require_relative 'test_helper'
 
-xdescribe "Driver class" do
+describe "Driver class" do
   describe "Driver instantiation" do
     before do
       @driver = RideShare::Driver.new(
@@ -24,8 +24,13 @@ xdescribe "Driver class" do
       expect { RideShare::Driver.new(id: 100, name: "George", vin: "33133313331333133extranums") }.must_raise ArgumentError
     end
 
+    #Driver.status changed to an optional parameter per interpretation of this test
     it "has a default status of :AVAILABLE" do
       expect(RideShare::Driver.new(id: 100, name: "George", vin: "12345678901234567").status).must_equal :AVAILABLE
+    end
+
+    it "raises ArgumentError for status other than :AVAILABLE, :UNAVAILABLE" do
+      expect{ RideShare::Driver.new(id: 100, name: "George", vin: "12345678901234567", status: :boogers).status }.must_raise ArgumentError
     end
 
     it "sets driven trips to an empty array if not provided" do
@@ -45,7 +50,7 @@ xdescribe "Driver class" do
     end
   end
 
-  describe "add_trip method" do
+  xdescribe "add_trip method" do
     before do
       pass = RideShare::Passenger.new(
         id: 1,
@@ -78,7 +83,7 @@ xdescribe "Driver class" do
     end
   end
 
-  describe "average_rating method" do
+  xdescribe "average_rating method" do
     before do
       @driver = RideShare::Driver.new(
         id: 54,
