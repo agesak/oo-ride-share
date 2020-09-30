@@ -17,6 +17,7 @@ module RideShare
       @trips << trip
     end
 
+
     def average_rating
       ratings = @trips.map{|trip| trip.rating.to_f}
       unless ratings.empty?
