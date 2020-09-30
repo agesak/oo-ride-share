@@ -19,9 +19,19 @@ module RideShare
 
 
     def average_rating
-      ratings = @trips.map{|trip| trip.rating.to_f}
+      ratings = @trips.map{ |trip| trip.rating.to_f }
       unless ratings.empty?
         return (ratings.sum/ratings.length).round(1)
+      end
+      return 0
+    end
+
+    def total_revenue
+      revenue = @trips.map { |trip| trip.cost.to_f }
+      unless revenue.empty?
+        # below logic assumes RideShare company forgoes $1.65 fee when trip.cost < 1.65 (company still makes 20% charge from ride)
+        num_long_trips = revenue.filter { |trip_cost| trip_cost >= 1.65 }.length
+        return ((revenue.sum - (1.65 * num_long_trips)) * 0.8).round(2)
       end
       return 0
     end
