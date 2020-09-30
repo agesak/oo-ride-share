@@ -137,5 +137,63 @@ describe "Driver class" do
 
   describe "total_revenue" do
     # You add tests for the total_revenue method
+    before do
+      @driver = RideShare::Driver.new(
+        id: 54,
+        name: "Rogers Bartell IV",
+        vin: "1C9EVBRM0YBC564DZ"
+      )
+      trip1 = RideShare::Trip.new(
+        id: 8,
+        driver: @driver,
+        passenger_id: 3,
+        start_time: Time.new(2016, 8, 8),
+        end_time: Time.new(2016, 8, 8),
+        rating: 5,
+        cost: 7
+      )
+      trip2 = RideShare::Trip.new(
+        id: 8,
+        driver: @driver,
+        passenger_id: 3,
+        start_time: Time.new(2016, 8, 8),
+        end_time: Time.new(2016, 8, 8),
+        rating: 5,
+        cost: 10
+      )
+      @trip3 = RideShare::Trip.new(
+          id: 8,
+          driver: @driver,
+          passenger_id: 3,
+          start_time: Time.new(2016, 8, 8),
+          end_time: Time.new(2016, 8, 8),
+          rating: 5,
+          cost: 1.50
+      )
+      @driver.add_trip(trip1)
+      @driver.add_trip(trip2)
+    end
+
+    it "returns float" do
+      expect(@driver.total_revenue).must_be_kind_of Float
+    end
+
+    it "returns correct calculation for only long trips" do
+      expect(@driver.total_revenue).must_be_close_to 10.96, 0.01
+    end
+
+    it "returns correct calculation including short trips" do
+      @driver.add_trip(@trip3)
+      expect(@driver.total_revenue).must_be_close_to 12.16, 0.1
+    end
+
+    it "return 0 if no driven trips" do
+      driver = RideShare::Driver.new(
+        id: 54,
+        name: "Rogers Bartell IV",
+        vin: "1C9EVBRM0YBC564DZ"
+      )
+      expect(driver.total_revenue).must_equal 0
+    end
   end
 end
