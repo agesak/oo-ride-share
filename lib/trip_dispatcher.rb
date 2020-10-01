@@ -28,6 +28,7 @@ module RideShare
 
     def request_trip(passenger_id)
       driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+      raise ArgumentError.new("No drivers are available.") unless driver
       driver.change_status
 
       passenger = find_passenger(passenger_id)

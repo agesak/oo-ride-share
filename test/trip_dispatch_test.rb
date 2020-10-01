@@ -155,5 +155,11 @@ describe "TripDispatcher class" do
       expect(before_status == after_status).must_equal false
     end
 
+    it "raises an Argument Error if no available drivers" do
+      #in test/test_data/drivers.csv, there are only two AVAILABLE drivers
+      @dispatcher.request_trip(1)
+      expect{@dispatcher.request_trip(1)}.must_raise ArgumentError
+    end
+
   end
 end
