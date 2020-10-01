@@ -106,8 +106,8 @@ describe "TripDispatcher class" do
         expect(first_driver.name).must_equal "Driver 1 (unavailable)"
         expect(first_driver.id).must_equal 1
         expect(first_driver.status).must_equal :UNAVAILABLE
-        expect(last_driver.name).must_equal "Driver 3 (no trips)"
-        expect(last_driver.id).must_equal 3
+        expect(last_driver.name).must_equal "Driver 4 (longest time since last trip)"
+        expect(last_driver.id).must_equal 4
         expect(last_driver.status).must_equal :AVAILABLE
       end
 
@@ -172,7 +172,10 @@ describe "TripDispatcher class" do
     end
 
     it "raises an Argument Error if no available drivers" do
-      #in test/test_data/drivers.csv, there are only two AVAILABLE drivers
+      #in test/test_data/drivers.csv, there are three AVAILABLE drivers
+      #select driver4
+      @dispatcher.request_trip(1)
+      #select driver2
       @dispatcher.request_trip(1)
       expect{@dispatcher.request_trip(1)}.must_raise ArgumentError
     end
