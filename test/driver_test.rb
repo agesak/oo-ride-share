@@ -101,6 +101,21 @@ describe "Driver class" do
       @driver.add_trip(trip)
     end
 
+    let(:in_progress_trip) {
+      RideShare::Trip.new(id: 1, passenger_id: 54, start_time: Time.now, end_time: nil, cost: nil, rating: nil, driver_id: 4)
+    }
+
+    let(:trip2){
+      RideShare::Trip.new(
+          id: 8,
+          driver: @driver,
+          passenger_id: 3,
+          start_time: Time.new(2016, 8, 8),
+          end_time: Time.new(2016, 8, 9),
+          rating: 1
+      )
+    }
+
     it "returns a float" do
       expect(@driver.average_rating).must_be_kind_of Float
     end
@@ -121,16 +136,13 @@ describe "Driver class" do
     end
 
     it "correctly calculates the average rating" do
-      trip2 = RideShare::Trip.new(
-        id: 8,
-        driver: @driver,
-        passenger_id: 3,
-        start_time: Time.new(2016, 8, 8),
-        end_time: Time.new(2016, 8, 9),
-        rating: 1
-      )
       @driver.add_trip(trip2)
+      expect(@driver.average_rating).must_be_close_to (5.0 + 1.0) / 2.0, 0.01
+    end
 
+    it "excludes in progress trips" do
+      @driver.add_trip(in_progress_trip)
+      @driver.add_trip(trip2)
       expect(@driver.average_rating).must_be_close_to (5.0 + 1.0) / 2.0, 0.01
     end
   end
@@ -165,6 +177,10 @@ describe "Driver class" do
       @driver.add_trip(trip2)
     end
 
+    let(:in_progress_trip) {
+      RideShare::Trip.new(id: 1, passenger_id: 54, start_time: Time.now, end_time: nil, cost: nil, rating: nil, driver_id: 4)
+    }
+
     it "returns float" do
       expect(@driver.total_revenue).must_be_kind_of Float
     end
@@ -194,6 +210,11 @@ describe "Driver class" do
         vin: "1C9EVBRM0YBC564DZ"
       )
       expect(driver.total_revenue).must_equal 0
+    end
+
+    it "excludes in progress trips" do
+      @driver.add_trip(in_progress_trip)
+      expect(@driver.total_revenue).must_be_close_to 10.96, 0.01
     end
   end
 end

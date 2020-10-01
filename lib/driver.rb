@@ -26,7 +26,8 @@ module RideShare
     end
 
     def average_rating
-      ratings = @trips.map{ |trip| trip.rating.to_f }
+      completed_trips = remove_in_progress_trips
+      ratings = completed_trips.map{ |trip| trip.rating.to_f }
       unless ratings.empty?
         return (ratings.sum/ratings.length).round(1)
       end
@@ -34,7 +35,8 @@ module RideShare
     end
 
     def total_revenue
-      revenue = @trips.map { |trip| trip.cost.to_f }
+      completed_trips = remove_in_progress_trips
+      revenue = completed_trips.map { |trip| trip.cost.to_f }
       unless revenue.empty?
         # below logic assumes RideShare company forgoes $1.65 fee when trip.cost < 1.65 (company still makes 20% charge from ride)
         num_long_trips = revenue.filter { |trip_cost| trip_cost >= 1.65 }.length
@@ -44,6 +46,10 @@ module RideShare
     end
 
     private
+
+    def remove_in_progress_trips
+      return @trips.select{|trip| trip.end_time != nil}
+    end
 
     def validate_vin(vin)
        raise ArgumentError.new("VIN must be 17 characters") if vin.length != 17

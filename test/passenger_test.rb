@@ -77,7 +77,7 @@ describe "Passenger class" do
       @passenger_empty = RideShare::Passenger.new(id: 54, name: "Fifty-Four", phone_number: "123456789", trips: [])
     end
 
-    let(:trip1) {
+    let(:in_progress_trip) {
       RideShare::Trip.new(id: 1, passenger_id: 54, start_time: Time.now, end_time: nil, cost: nil, rating: nil, driver_id: 4)
     }
 
@@ -92,7 +92,7 @@ describe "Passenger class" do
       end
 
       it "excludes in progress trips" do
-        @passenger_54.add_trip(trip1)
+        @passenger_54.add_trip(in_progress_trip)
         expect(@passenger_54.net_expenditures).must_equal 40
       end
     end
@@ -107,7 +107,7 @@ describe "Passenger class" do
       end
 
       it "exludes in progress trips" do
-        @passenger_54.add_trip(trip1)
+        @passenger_54.add_trip(in_progress_trip)
         expect(@passenger_54.total_time_spent).must_equal 4228.0
       end
 
