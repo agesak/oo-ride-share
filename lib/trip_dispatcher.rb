@@ -26,6 +26,20 @@ module RideShare
       return @drivers.find { |driver| driver.id == id }
     end
 
+    def request_trip(passenger_id)
+      driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+      driver.change_status
+
+      passenger = find_passenger(passenger_id)
+
+      new_trip = Trip.new(id: @trips.last.id + 1, passenger_id: passenger_id, start_time: Time.now, end_time: nil, cost: nil, rating: nil, driver: driver)
+      new_trip.connect(passenger, driver)
+
+      @trips.push(new_trip)
+
+      return new_trip
+    end
+
     def inspect
       # Make puts output more useful
       return "#<#{self.class.name}:0x#{object_id.to_s(16)} \

@@ -31,15 +31,17 @@ module RideShare
         raise ArgumentError, 'Passenger or passenger_id is required'
       end
 
-      raise ArgumentError, "Invalid trip length." if start_time > end_time
+      raise ArgumentError, "Invalid trip length." if (start_time && end_time) && (start_time > end_time)
       @start_time = start_time
       @end_time = end_time
 
       @cost = cost
       @rating = rating
 
-      if @rating > 5 || @rating < 1
-        raise ArgumentError.new("Invalid rating #{@rating}")
+      if @rating
+        if @rating > 5 || @rating < 1
+          raise ArgumentError.new("Invalid rating #{@rating}")
+        end
       end
 
       if driver

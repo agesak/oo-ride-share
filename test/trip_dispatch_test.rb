@@ -78,8 +78,7 @@ describe "TripDispatcher class" do
     end
   end
 
-  # TODO: un-skip for Wave 2
-  xdescribe "drivers" do
+  describe "drivers" do
     describe "find_driver method" do
       before do
         @dispatcher = build_test_dispatcher
@@ -120,6 +119,15 @@ describe "TripDispatcher class" do
           expect(trip.driver.trips).must_include trip
         end
       end
+    end
+  end
+
+  describe "request trip" do
+    before do
+      @dispatcher = build_test_dispatcher
+    end
+    it "returns a trip object" do
+      expect(@dispatcher.request_trip(1)).must_be_instance_of RideShare::Trip
     end
   end
 end
