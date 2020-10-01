@@ -27,7 +27,13 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+      drivers = @drivers.select{|driver| (driver.status == :AVAILABLE)}
+      # list of drivers with rides in progress
+      busy_drivers = drivers.map{|driver| find_in_progress_trips(driver)}
+      # exclude drivers with rides in progress
+      available_drivers = drivers.select{|driver| !busy_drivers.include?(driver.id)}
+      driver = select_driver(available_drivers)
+
       raise ArgumentError.new("No drivers are available.") unless driver
       driver.change_status
 
@@ -50,6 +56,34 @@ module RideShare
     end
 
     private
+
+    def find_in_progress_trips(driver)
+      running = driver.trips.select{|trip| trip.end_time == nil}
+      # if there are running trips, return the driver id
+      unless running.empty?
+        return driver.id
+      end
+    end
+
+    def select_driver(drivers)
+      # select first driver who has never driven (if there are multiple)
+      driver = drivers.find{|driver| driver.trips.empty?}
+      # assumes preference for driver who has never driven over driver with ride long time ago
+      if driver
+        return driver
+      end
+      # select driver # select first driver who has never driven (if there are multiple)
+      hash = {}
+      drivers.each do |driver|
+        # find most recent trip
+        most_recent_trip = driver.trips.map{|trip| trip.end_time}.sort[-1]
+        hash[driver.id] = most_recent_trip
+      end
+      # find driver with most recent trip
+      driver_id = hash.max_by{|driver, trip_date| trip_date}
+      # this method literally exists on line 24
+      return drivers.find{|driver| driver.id == driver_id}
+    end
 
     def connect_trips
       @trips.each do |trip|
