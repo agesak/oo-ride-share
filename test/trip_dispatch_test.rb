@@ -129,16 +129,8 @@ describe "TripDispatcher class" do
       @new_trip = @dispatcher.request_trip(1)
     end
 
-    let(:driver){
-      @dispatcher.find_driver(2)
-    }
-
     it "returns a trip object" do
       expect(@new_trip).must_be_instance_of RideShare::Trip
-    end
-
-    it "updates the driver list with new trip" do
-      expect(driver.trips.last).must_equal @new_trip
     end
 
     it "updates the passenger list with new trip" do
@@ -146,13 +138,25 @@ describe "TripDispatcher class" do
       expect(passenger1.trips.last).must_equal @new_trip
     end
 
-    it "selects an available driver and changes status" do
+    it "selects new drivers first from AVAILABLE drivers" do
+    #driver3 is second/last AVAILABLE in test/test_date/drivers.csv, but with no trips, and should be selected to drive
+      expect(@new_trip.driver_id).must_equal 3
+    end
+
+   it "updates the driver list with new trip" do
+     #driver3 should be selected first from test/test_data/drivers.csv
       driver3 = @dispatcher.find_driver(3)
-      before_status = driver3.status
+      expect(driver3.trips.last).must_equal @new_trip
+    end
+
+    it "changes driver status" do
+      #driver2 also AVAILABLE in test/test_data/drivers.csv and should be selected after driver3
+      driver2 = @dispatcher.find_driver(2)
+      before_status = driver2.status
       @dispatcher.request_trip(1)
-      after_status = driver3.status
+      after_status = driver2.status
       expect(before_status).must_equal :AVAILABLE
-      expect(before_status == after_status).must_equal false
+      expect(after_status).must_equal :UNAVAILABLE
     end
 
     it "raises an Argument Error if no available drivers" do
@@ -160,6 +164,7 @@ describe "TripDispatcher class" do
       @dispatcher.request_trip(1)
       expect{@dispatcher.request_trip(1)}.must_raise ArgumentError
     end
-
   end
+
+
 end
