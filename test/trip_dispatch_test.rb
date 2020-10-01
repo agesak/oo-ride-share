@@ -123,6 +123,7 @@ describe "TripDispatcher class" do
   end
 
   describe "request trip" do
+
     before do
       @dispatcher = build_test_dispatcher
       @new_trip = @dispatcher.request_trip(1)
@@ -145,8 +146,13 @@ describe "TripDispatcher class" do
       expect(passenger1.trips.last).must_equal @new_trip
     end
 
-    it "selects an available driver" do
-      before_status = driver2.status
+    it "selects an available driver and changes status" do
+      driver3 = @dispatcher.find_driver(3)
+      before_status = driver3.status
+      @dispatcher.request_trip(1)
+      after_status = driver3.status
+      expect(before_status).must_equal :AVAILABLE
+      expect(before_status == after_status).must_equal false
     end
 
   end
