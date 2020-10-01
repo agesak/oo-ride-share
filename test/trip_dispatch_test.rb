@@ -139,7 +139,7 @@ describe "TripDispatcher class" do
     end
 
     it "selects new drivers first from AVAILABLE drivers" do
-    #driver3 is second/last AVAILABLE in test/test_date/drivers.csv, but with no trips, and should be selected to drive
+    #driver3 is second AVAILABLE in test/test_date/drivers.csv, but with no trips, and should be selected to drive first
       expect(@new_trip.driver_id).must_equal 3
     end
 
@@ -149,10 +149,22 @@ describe "TripDispatcher class" do
       expect(driver3.trips.last).must_equal @new_trip
     end
 
+    it "selects based on time from last trip" do
+      # driver4 added to test/test_data/drivers.csv and a trip added to test/test_data/trip.csv
+      # driver4 last trip ended before driver2's last trip so driver4 should be selected to driver after driver3
+      driver4 = @dispatcher.find_driver(4)
+      newest_trip = @dispatcher.request_trip(1)
+      expect(newest_trip.driver).must_equal driver4
+
+    end
+
     it "changes driver status" do
-      #driver2 also AVAILABLE in test/test_data/drivers.csv and should be selected after driver3
+      #driver2 also AVAILABLE in test/test_data/drivers.csv and should be selected last
       driver2 = @dispatcher.find_driver(2)
       before_status = driver2.status
+      #select driver4
+      @dispatcher.request_trip(1)
+      #select driver2
       @dispatcher.request_trip(1)
       after_status = driver2.status
       expect(before_status).must_equal :AVAILABLE
