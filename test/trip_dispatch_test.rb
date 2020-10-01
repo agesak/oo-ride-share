@@ -128,18 +128,25 @@ describe "TripDispatcher class" do
       @new_trip = @dispatcher.request_trip(1)
     end
 
+    let(:driver){
+      @dispatcher.find_driver(2)
+    }
+
     it "returns a trip object" do
       expect(@new_trip).must_be_instance_of RideShare::Trip
     end
 
     it "updates the driver list with new trip" do
-      driver2 = @dispatcher.find_driver(2)
-      expect(driver2.trips.last).must_equal @new_trip
+      expect(driver.trips.last).must_equal @new_trip
     end
 
     it "updates the passenger list with new trip" do
       passenger1 = @dispatcher.find_passenger(1)
       expect(passenger1.trips.last).must_equal @new_trip
+    end
+
+    it "selects an available driver" do
+      before_status = driver2.status
     end
 
   end
