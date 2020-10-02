@@ -176,9 +176,6 @@ describe "TripDispatcher class" do
       expect{@dispatcher.request_trip(1)}.must_raise ArgumentError
     end
 
-    #TODO: add test for drivers with in-progress trips are not selected (is this necessary since #request_trip changes the driver status to UNAVAILABLE?
-
   end
-
 
 end
