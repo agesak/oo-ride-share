@@ -51,22 +51,32 @@ module RideShare
     end
 
     private
+    def find_in_progress_trips(driver)
+      running = driver.trips.select{|trip| trip.end_time == nil}
+      # if there are running trips, return the driver id
+      unless running.empty?
+        return driver.id
+      end
+    end
+
 
     def find_next_driver
-      available_drivers = @drivers.filter { |driver| driver.status == :AVAILABLE }
+      # select available drivers (no in-progress trips)
+      available_drivers = @drivers.filter { |driver| driver.status == :AVAILABLE && driver.trips.all?{ |trip| trip.end_time != nil} }
+
       new_driver = available_drivers.find { |driver| driver.trips.empty? }
       if new_driver
         return new_driver
       else
         available_drivers.max do |driver|
-          sorted_trips = driver.sort_trips_by_end_time
+          sorted_trips = sort_trips_by_end_time(driver)
           Time.now - sorted_trips.last.end_time
         end
       end
     end
 
-    def sort_trips_by_end_time
-      return @trips.sort_by { |trip| trip.end_time }
+    def sort_trips_by_end_time(driver)
+      return driver.trips.sort_by { |trip| trip.end_time }
     end
 
     def connect_trips
