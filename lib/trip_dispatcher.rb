@@ -58,8 +58,15 @@ module RideShare
       if new_driver
         return new_driver
       else
-        return available_drivers.max { |driver| (Time.now - driver.trips.last.end_time) }
+        available_drivers.max do |driver|
+          sorted_trips = driver.sort_trips_by_end_time
+          Time.now - sorted_trips.last.end_time
+        end
       end
+    end
+
+    def sort_trips_by_end_time
+      return @trips.sort_by { |trip| trip.end_time }
     end
 
     def connect_trips
