@@ -51,15 +51,6 @@ module RideShare
     end
 
     private
-    def find_in_progress_trips(driver)
-      running = driver.trips.select{|trip| trip.end_time == nil}
-      # if there are running trips, return the driver id
-      unless running.empty?
-        return driver.id
-      end
-    end
-
-
     def find_next_driver
       # select available drivers (no in-progress trips)
       available_drivers = @drivers.filter { |driver| driver.status == :AVAILABLE && driver.trips.all?{ |trip| trip.end_time != nil} }
