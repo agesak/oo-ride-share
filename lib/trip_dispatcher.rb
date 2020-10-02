@@ -27,7 +27,7 @@ module RideShare
     end
 
     def request_trip(passenger_id)
-      driver = @drivers.find{|driver| driver.status == :AVAILABLE }
+      driver = find_next_driver
       raise ArgumentError.new("No drivers are available.") unless driver
       driver.change_status
 
@@ -41,6 +41,7 @@ module RideShare
       return new_trip
     end
 
+
     def inspect
       # Make puts output more useful
       return "#<#{self.class.name}:0x#{object_id.to_s(16)} \
@@ -50,6 +51,24 @@ module RideShare
     end
 
     private
+    def find_next_driver
+      # select available drivers (no in-progress trips)
+      available_drivers = @drivers.filter { |driver| driver.status == :AVAILABLE && driver.trips.all?{ |trip| trip.end_time != nil} }
+
+      new_driver = available_drivers.find { |driver| driver.trips.empty? }
+      if new_driver
+        return new_driver
+      else
+        available_drivers.max do |driver|
+          sorted_trips = sort_trips_by_end_time(driver)
+          Time.now - sorted_trips.last.end_time
+        end
+      end
+    end
+
+    def sort_trips_by_end_time(driver)
+      return driver.trips.sort_by { |trip| trip.end_time }
+    end
 
     def connect_trips
       @trips.each do |trip|

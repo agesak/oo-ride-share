@@ -36,12 +36,15 @@ module RideShare
       @end_time = end_time
 
       @cost = cost
+
+      if @cost && (@cost < 0)
+        raise ArgumentError.new("Invalid trip cost - cannot be a negative value.")
+      end
+
       @rating = rating
 
-      if @rating
-        if @rating > 5 || @rating < 1
-          raise ArgumentError.new("Invalid rating #{@rating}")
-        end
+      if @rating && (@rating > 5 || @rating < 1)
+        raise ArgumentError.new("Invalid rating #{@rating}")
       end
 
       if driver

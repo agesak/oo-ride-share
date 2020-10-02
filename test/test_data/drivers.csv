@@ -2,3 +2,4 @@ id,name,vin,status
 1,Driver 1 (unavailable),1B6CF40K1J3Y74UY0,UNAVAILABLE
 2,Driver 2,1B6CF40K1J3Y74UY2,AVAILABLE
 3,Driver 3 (no trips),1C6CF40K1J3Y74UY2,AVAILABLE
+4,Driver 4 (longest time since last trip),12345F78912345678,AVAILABLE
